@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "axios": "^1.4.0",
+    "child_process": "^1.0.2",
+    "dockerode": "^3.3.5"
+  }
+}

@@ -1,0 +1,38 @@
+version: "3.2"
+services:
+  redis:
+    container_name: 'redis'
+    image: redis:latest
+    ports:
+      - 6379:6379
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    restart: unless-stopped
+    ports:
+      - 5673:5672
+      - 15673:15672
+  consumer:
+    build: ./javacompiler
+    container_name: 'consumer'
+    depends_on:
+      - "redis"
+      - "rabbitmq"
+    restart: unless-stopped
+    environment:
+      NAME: "consumer1"
+      NODE_ENV: production
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      REDIS_HOST: redis
+  balancer:
+    build: ./loadbalancer
+    container_name: 'balancer'
+    depends_on:
+      - "redis"
+      - "rabbitmq"
+    restart: unless-stopped
+    environment:
+      NAME: "consumer1"
+      NODE_ENV: production
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      REDIS_HOST: redis
